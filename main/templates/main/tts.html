@@ -1,0 +1,56 @@
+{% extends 'main/base.html' %} {% block title %} Speech to text {% endblock %} {% block content %}
+<h1>Text to speech</h1>
+
+    
+<div class="w-75 mx-auto my-auto">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Enter your text and press speak</h5>
+
+    Select Voice: <select class="form-select" id='voiceList'></select> <br>
+
+    <textarea class="form-control" rows="3" id="txtInput" type="text" placeholder="Enter your text"></textarea><br/>    
+    <button class="btn btn-outline-primary" id='btnSpeak'>Speak!</button>
+
+    <script>
+        var txtInput = document.querySelector('#txtInput');
+        var voiceList = document.querySelector('#voiceList');
+        var btnSpeak = document.querySelector('#btnSpeak');
+        var synth = window.speechSynthesis;
+        var voices = [];
+
+        PopulateVoices();
+        if(speechSynthesis !== undefined){
+            speechSynthesis.onvoiceschanged = PopulateVoices;
+        }
+
+        btnSpeak.addEventListener('click', ()=> {
+            var toSpeak = new SpeechSynthesisUtterance(txtInput.value);
+            var selectedVoiceName = voiceList.selectedOptions[0].getAttribute('data-name');
+            voices.forEach((voice)=>{
+                if(voice.name === selectedVoiceName){
+                    toSpeak.voice = voice;
+                }
+            });
+            synth.speak(toSpeak);
+        });
+
+        function PopulateVoices(){
+            voices = synth.getVoices();
+            var selectedIndex = voiceList.selectedIndex < 0 ? 0 : voiceList.selectedIndex;
+            voiceList.innerHTML = '';
+            voices.forEach((voice)=>{
+                var listItem = document.createElement('option');
+                listItem.textContent = voice.name;
+                listItem.setAttribute('data-lang', voice.lang);
+                listItem.setAttribute('data-name', voice.name);
+                voiceList.appendChild(listItem);
+            });
+
+            voiceList.selectedIndex = selectedIndex;
+        }
+    </script>
+    </div>
+    </div>
+    </div>
+{% endblock %}

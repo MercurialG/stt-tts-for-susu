@@ -1,0 +1,33 @@
+{% extends 'main/base.html' %}
+{% block title %} Speech to text 
+{% endblock %} 
+{% block content %}
+<h1>Speech recognition</h1>
+
+<div class="w-75 mx-auto my-auto">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Press record and speak</h5>
+
+      <textarea class="form-control" rows="3" id="speechToText" type="text" placeholder="Say something" readonly></textarea><br/>
+
+      <script>
+        function record() {
+          var recognition = new webkitSpeechRecognition();
+          recognition.lang = "en-GB";
+
+          recognition.onresult = function (event) {
+            // console.log(event);
+            document.getElementById("speechToText").value =
+              event.results[0][0].transcript;
+          };
+          recognition.start();
+        }
+      </script>
+
+      <button class="btn btn-outline-primary" onclick="record()">Record!</button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
